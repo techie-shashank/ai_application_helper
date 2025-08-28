@@ -1,6 +1,13 @@
+
 """
 Main entry point for the AI Application Drafter
 """
+
+# Fix for Windows asyncio subprocess NotImplementedError (Python 3.8+)
+import sys
+import asyncio
+if sys.platform.startswith('win') and sys.version_info >= (3, 8):
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 import os
 from dotenv import load_dotenv
@@ -10,9 +17,9 @@ from workflows.application_workflow import ApplicationWorkflow
 if __name__ == "__main__":
     # Load environment variables from .env file
     load_dotenv()
-    openai_api_key = os.getenv("OPENAI_API_KEY")
-    if not openai_api_key:
-        raise ValueError("Please set the OPENAI_API_KEY variable in your .env file.")
+    gemini_api_key = os.getenv("GEMINI_API_KEY")
+    if not gemini_api_key:
+        raise ValueError("Please set the GEMINI_API_KEY variable in your .env file.")
 
     # Example usage: update these paths/URLs as needed
     profile_sources = [
@@ -23,7 +30,7 @@ if __name__ == "__main__":
     entity_url = "https://www.exampleuniversity.edu/about"  # Target entity URL
     application_type = "SOP"  # or "Job Application", "Thesis Application", etc.
 
-    workflow = ApplicationWorkflow(openai_api_key)
+    workflow = ApplicationWorkflow(gemini_api_key)
     result = workflow.run(profile_sources, entity_url, application_type)
 
     print("\n--- Profile Summary ---\n", result["profile_summary"])

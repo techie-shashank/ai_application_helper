@@ -5,6 +5,11 @@ import streamlit as st
 import os
 from dotenv import load_dotenv
 from workflows.application_workflow import ApplicationWorkflow
+import sys
+import asyncio
+
+if sys.platform.startswith('win') and sys.version_info >= (3, 8):
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 st.set_page_config(page_title="AI Application Drafter", layout="wide")
 st.title("Personalized AI SOP/Job/Thesis Application Drafter")
@@ -35,10 +40,23 @@ if submitted and (uploaded_files or user_prompt):
         st.warning("Please provide your GEMINI_API_KEY in the .env file.")
     else:
         workflow = ApplicationWorkflow(gemini_api_key)
-        with st.spinner("Processing..."):
-            # Pass user_prompt and submission_url_input
+        status_steps = [
+            "[1] Summarizing profile data...",
+            "[2] Researching entity...",
+            "[3] Drafting application...",
+            "[4] Validating application...",
+            "[5] Submitting application via MCP server..."
+        ]
+        status_placeholder = st.empty()
+        # Show each step in the spinner
+        for step in status_steps:
+            status_placeholder.info(step)
+            # Simulate step duration (remove in production, or connect to real workflow progress)
+            import time
+            time.sleep(0.8)
+        with st.spinner("Finalizing..."):
             result = workflow.run(profile_sources, user_prompt, submission_url_input)
-
+        status_placeholder.empty()
         st.subheader("Profile Summary")
         st.write(result["profile_summary"])
         st.subheader("Entity Summary")

@@ -16,7 +16,7 @@ class ApplicationWorkflow:
         self.entity_agent = EntityResearchAgent(gemini_api_key)
         self.writer_agent = WritingAgent(gemini_api_key)
         self.validator_agent = ValidationAgent(gemini_api_key)
-        self.submission_agent = SubmissionAgent(headless=True)
+        self.submission_agent = SubmissionAgent(gemini_api_key)
         self.llm = ChatGoogleGenerativeAI(
             google_api_key=gemini_api_key,
             model="gemini-2.5-flash"
@@ -70,7 +70,7 @@ class ApplicationWorkflow:
         application = self.writer_agent.draft_application(profile_summary, entity_summary, application_type)
         print("[4] Validating application...")
         review = self.validator_agent.validate_application(application, profile_summary, entity_summary)
-        print("[5] Submitting application via browser-use...")
+        print("[5] Submitting application via MCP server...")
         submission_result = None
         if submission_url:
             submission_result = self.submission_agent.submit_application(submission_url, application)

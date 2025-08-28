@@ -4,3 +4,11 @@ openai
 requests
 python-dotenv
 streamlit
+langchain-community
+langchain_google_genai
+browser-use
+fastapi
+uvicorn
+langchain-mcp-adapters
+uv
+mcp[cli]
